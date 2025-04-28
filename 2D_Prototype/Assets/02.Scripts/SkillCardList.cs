@@ -5,6 +5,7 @@ using UnityEngine;
 using Random = System.Random;
 using PT.Models;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 
 public class SkillCardList : MonoBehaviour
@@ -55,7 +56,18 @@ public class SkillCardList : MonoBehaviour
 
         FillSkillList();
 
+    }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            FillSkillList();
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            UnChooseCardInList();
+        }
     }
 
     public void CardPositionSwap(int Card1, int Card2)
