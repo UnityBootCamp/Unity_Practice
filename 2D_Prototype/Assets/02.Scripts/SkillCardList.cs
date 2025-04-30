@@ -25,13 +25,13 @@ public class SkillCardList : MonoBehaviour
 
     [Header("For Casting Skill")]
     [SerializeField] GameObject _usingCardList;          // 사용할 카드목록 리스트
-    List<int> _castingCardIndex;                        // 사용대기중인 카드 목록
     Image[] _usingCardSlots;                            // 현재턴에 사용하려고 고른 카드 배열
 
+
+    [SerializeField] SkillCardData _moveCard;
     int[] _deltaOfCardLeftWay;                     // 현재턴, 카드선택 단계에 각 인덱스별로 선택된 횟수
-    int[] _deltaOfCardRightWay;
     int _choosenCardsCount;                             // 선택한 카드 수
-    
+    bool _isUsingPhase;
 
     const int MAX_SKILL_CARD_COUNT = 10;               // 플레이어가 한 턴에 소지가능한 카드 수
                           
@@ -41,13 +41,12 @@ public class SkillCardList : MonoBehaviour
     {
 
         _skillList = new List<SkillCard>(MAX_SKILL_CARD_COUNT);
-        _castingCardIndex = new List<int>(_playableCharacters.Length);
         _playerSkills = new List<SkillCardData>(_playableCharacters.Length * 2);
         _skillQueue = new Queue<SkillCardData>(_playableCharacters.Length * 2);
         _skillSequence = new List<SkillCardData>(_playableCharacters.Length * 2);
         _deltaOfCardLeftWay = new int[MAX_SKILL_CARD_COUNT];
-        _deltaOfCardRightWay = new int[MAX_SKILL_CARD_COUNT];
 
+        _isUsingPhase = false;
         _usingCardSlots = _usingCardList.GetComponentsInChildren<Image>();
         _choosenCardsCount = 0;
 
@@ -86,7 +85,7 @@ public class SkillCardList : MonoBehaviour
 
     public void CardListReplaceToLeftWay(int startIndex, int targetIndex)
     {
-        if (_choosenCardsCount != 0)
+        if (_isUsingPhase)
             return;
 
         SkillCard tmpSkillCard = _skillList[startIndex];
@@ -102,11 +101,20 @@ public class SkillCardList : MonoBehaviour
         _skillList[targetIndex].SkillCardImage = tmpSkillCard.SkillCardImage;
         _skillList[targetIndex].UpdateCard();
 
+        _usingCardSlots[_choosenCardsCount].sprite = _moveCard.SkillCardSprite;
+        _choosenCardsCount++;
+
+        if (_choosenCardsCount == 4)
+        {
+            //코루틴 실행
+            StartCoroutine(UseCardDelay());
+        }
+
     }
 
     public void CardListReplaceToRightWay(int startIndex, int targetIndex)
     {
-        if (_choosenCardsCount != 0)
+        if (_isUsingPhase)
             return;
 
         SkillCard tmpSkillCard = _skillList[startIndex];
@@ -114,12 +122,21 @@ public class SkillCardList : MonoBehaviour
 
         for (int i = startIndex; i > targetIndex; i--)
         {
-            CardPositionSwap(i, i - 1 - _deltaOfCardRightWay[i-1]);
+            CardPositionSwap(i, i - 1);
         }
 
         _skillList[targetIndex] = tmpSkillCard;
         _skillList[targetIndex].SkillCardImage = tmpSkillCard.SkillCardImage;
         _skillList[targetIndex].UpdateCard();
+
+        _usingCardSlots[_choosenCardsCount].sprite = _moveCard.SkillCardSprite;
+        _choosenCardsCount++;
+
+        if (_choosenCardsCount == 4)
+        {
+            //코루틴 실행
+            StartCoroutine(UseCardDelay());
+        }
 
     }
 
@@ -129,14 +146,13 @@ public class SkillCardList : MonoBehaviour
         if (_choosenCardsCount >= 4)
             return;
 
+        _isUsingPhase = true;
         // 사용카드슬롯의 스프라이트를 리스트에서 선택한 카드의 스프라이트로 변경
         _usingCardSlots[_choosenCardsCount].sprite = _skillList[index+_deltaOfCardLeftWay[index]].SkillCardImage.sprite;
 
         // 선택한 카드 UI 인스턴스 비활성화
         _skillList[index+_deltaOfCardLeftWay[index]].SkillCardImage.gameObject.SetActive(false);
 
-        // 선택한 카드의 인덱스 담아둠
-        _castingCardIndex.Add(index + _deltaOfCardLeftWay[index]);
         
         // delta 조정
         for(int i = index; i<_deltaOfCardLeftWay.Length; i++)
@@ -161,7 +177,6 @@ public class SkillCardList : MonoBehaviour
         // 3초 딜레이
         yield return new WaitForSeconds(3);
         UseCard();
-
     }
 
     public void UseCard()
@@ -188,9 +203,8 @@ public class SkillCardList : MonoBehaviour
             }
         }
 
-
-       _deltaOfCardLeftWay = new int[MAX_SKILL_CARD_COUNT];
-        _castingCardIndex.Clear();
+        _isUsingPhase = false ;
+        _deltaOfCardLeftWay = new int[MAX_SKILL_CARD_COUNT];
     }
 
     /// <summary>
@@ -198,6 +212,8 @@ public class SkillCardList : MonoBehaviour
     /// </summary>
     public void UnChooseCardInList()
     {
+        if (_choosenCardsCount <= 0)
+            return;
         
         while (_choosenCardsCount > 0)
         {
@@ -210,9 +226,8 @@ public class SkillCardList : MonoBehaviour
             _skillList[i].SkillCardImage.gameObject.SetActive(true);
         }
 
-
+        _isUsingPhase = false;
         _deltaOfCardLeftWay = new int[MAX_SKILL_CARD_COUNT];
-        _castingCardIndex.Clear();
     }
 
     public void FillSkillList()
@@ -226,7 +241,6 @@ public class SkillCardList : MonoBehaviour
                 RefillQueue();
             }
 
-            
             SkillCard newSkillCard = new SkillCard(); // 비어있는 이미지  이 인스턴스의 자식으로 생성해서 
             newSkillCard.SkillCardData = _skillQueue.Dequeue(); // 스킬 대기 큐에서 dequeue 한 스프라이트로 이미지 스프라이트 변경하고
             newSkillCard.SkillCardImage = Instantiate(_defaultSkillCard, transform); // 이미지 생성하여 SkillCardList 인스턴스의 자식으로 변경하고, 생성된 SkillCard 인스턴스의 필드에 참조 전달한다.

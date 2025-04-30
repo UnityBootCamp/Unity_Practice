@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ebbafb802eeefb4498d56aa4c730352, type: 3}
-  m_Name: SkillCard_PC1_B
+  m_Name: SkillCard_Move
   m_EditorClassIdentifier: 
-  <SkillCardId>k__BackingField: 2
-  <SkillCardSprite>k__BackingField: {fileID: -8891242169663869165, guid: a673dd02c2150414581a68cabba3069a, type: 3}
+  <SkillCardId>k__BackingField: 8
+  <SkillCardSprite>k__BackingField: {fileID: 6701507649584551724, guid: 09ab22b66d6445b47b6b2324a06f5e53, type: 3}

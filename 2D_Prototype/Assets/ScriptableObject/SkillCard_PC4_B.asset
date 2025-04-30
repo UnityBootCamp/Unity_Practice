@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SkillCard_PC4_B
   m_EditorClassIdentifier: 
   <SkillCardId>k__BackingField: 8
-  <SkillCardSprite>k__BackingField: {fileID: 21300000, guid: 22e145bbf53b85f45b02b3d7c8ddec61, type: 3}
+  <SkillCardSprite>k__BackingField: {fileID: 1972686612406081624, guid: 19e33f7630d433d4e8471b2a2e7b1ed0, type: 3}

@@ -27,11 +27,6 @@ public class UI_SkillCard : MonoBehaviour, IPointerUpHandler, IPointerClickHandl
     int _nextIndex;
     const int MAX_SKILL_CARD_COUNT = 10;
 
-    void Update()
-    {
-
-    }
-
     // Å¬¸¯
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -81,7 +76,5 @@ public class UI_SkillCard : MonoBehaviour, IPointerUpHandler, IPointerClickHandl
         }
 
     }
-
-    
     
 }
