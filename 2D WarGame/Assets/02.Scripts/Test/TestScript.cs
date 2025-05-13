@@ -5,12 +5,14 @@ public class TestScript : MonoBehaviour
 {
     Animator _playerAnim;
     Vector2 _moveDirection;
-
+    
+    public GameObject ParentObject;
     public float _speed;
     public Vector3 PlayerSize;
 
     void Start()
     {
+        ParentObject = transform.parent.gameObject;
         _playerAnim = GetComponent<Animator>();
 
         Bounds totalBounds = new Bounds(transform.position, Vector3.zero);
@@ -25,8 +27,8 @@ public class TestScript : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    { 
-        transform.Translate(_moveDirection * _speed *  Time.deltaTime);
+    {
+        ParentObject.transform.Translate(_moveDirection * _speed *  Time.deltaTime);
     }
 
     public void OnAttack(InputAction.CallbackContext context)
@@ -44,11 +46,11 @@ public class TestScript : MonoBehaviour
 
         if (_moveDirection.x < 0)
         {
-            transform.localScale = new Vector3(1, 1, 1); // 哭率
+            ParentObject.transform.localScale = new Vector3(1, 1, 1); // 哭率
         }
         else if (_moveDirection.x > 0)
         {
-            transform.localScale = new Vector3(-1, 1, 1);  // 坷弗率
+            ParentObject.transform.localScale = new Vector3(-1, 1, 1);  // 坷弗率
         }
 
         if (_moveDirection != Vector2.zero)

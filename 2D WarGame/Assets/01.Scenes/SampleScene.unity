@@ -457,7 +457,7 @@ PrefabInstance:
       addedObject: {fileID: 650238193}
     - targetCorrespondingSourceObject: {fileID: 5345946393826084961, guid: b94076ff6ae76da4096411a1028cee6a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 650238194}
+      addedObject: {fileID: 650238198}
   m_SourcePrefab: {fileID: 100100000, guid: b94076ff6ae76da4096411a1028cee6a, type: 3}
 --- !u!1 &650238192 stripped
 GameObject:
@@ -491,7 +491,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 650238194}
+      - m_Target: {fileID: 650238198}
         m_TargetAssemblyTypeName: TestScript, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
@@ -507,7 +507,7 @@ MonoBehaviour:
     m_ActionName: 'PlayerMovement/Move[/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 650238194}
+      - m_Target: {fileID: 650238198}
         m_TargetAssemblyTypeName: TestScript, Assembly-CSharp
         m_MethodName: OnAttack
         m_Mode: 0
@@ -526,7 +526,7 @@ MonoBehaviour:
   m_DefaultActionMap: PlayerMovement
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &650238194
+--- !u!114 &650238198
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -538,6 +538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b8597cc0fd17eb4291e5f212465612f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ParentObject: {fileID: 0}
   _speed: 5
   PlayerSize: {x: 0, y: 0, z: 0}
 --- !u!1001 &1486639476
@@ -650,14 +651,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8735391699020361541, guid: 090c263c82021404489d529a0139c30f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1486639478}
+      addedObject: {fileID: 1486639482}
   m_SourcePrefab: {fileID: 100100000, guid: 090c263c82021404489d529a0139c30f, type: 3}
 --- !u!1 &1486639477 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8735391699020361541, guid: 090c263c82021404489d529a0139c30f, type: 3}
   m_PrefabInstance: {fileID: 1486639476}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1486639478
+--- !u!114 &1486639482
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -669,7 +670,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f96c86367b1394e45b754610ec189c39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 650238194}
+  target: {fileID: 650238198}
+  ParentObject: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

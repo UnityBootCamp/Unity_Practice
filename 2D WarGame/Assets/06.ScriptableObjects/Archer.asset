@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 49118ea13d08faa4b8c99357014c150c, type: 3}
-  m_Name: Farmer
+  m_Name: Archer
   m_EditorClassIdentifier: 
-  <UnitPrefab>k__BackingField: {fileID: 4770405339845413433, guid: 5598fab9c3b44c84abb12b8e0dcfed5e, type: 3}
-  <UnitType>k__BackingField: 0
+  <UnitPrefab>k__BackingField: {fileID: 734299766077738738, guid: e2336c19f5bb5aa478cad3ee63356d27, type: 3}
+  <UnitType>k__BackingField: 2
   <Hp>k__BackingField: 3
   <AttackForce>k__BackingField: 3
-  <MoveSpeed>k__BackingField: 2
+  <MoveSpeed>k__BackingField: 5
   <AttackDelay>k__BackingField: 3

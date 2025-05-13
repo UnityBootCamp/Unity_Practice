@@ -10,11 +10,13 @@ public class TestEnemy : MonoBehaviour
     float speed;
     bool isAttacking;
     Animator enemyAnimtor;
+    public GameObject ParentObject;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         speed = 1f;
+        ParentObject = transform.parent.gameObject;
 
         enemyAnimtor = GetComponent<Animator>();
 
@@ -34,8 +36,10 @@ public class TestEnemy : MonoBehaviour
     {
         if (transform.position.x + Size.x / 2 < target.transform.position.x - target.PlayerSize.x / 2)
         {
-            Vector3 direction = (target.transform.position - transform.position).normalized;
-            transform.position += direction * Time.deltaTime * speed;
+            Vector3 direction = (target.ParentObject.transform.position - ParentObject.transform.position).normalized;
+
+            ParentObject.transform.Translate(direction * Time.deltaTime * speed);
+            //transform.position += direction * Time.deltaTime * speed;
             enemyAnimtor.SetBool("1_Move", true);
         }
         else
