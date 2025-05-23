@@ -16,5 +16,5 @@ MonoBehaviour:
   <UnitType>k__BackingField: 2
   <Hp>k__BackingField: 3
   <AttackForce>k__BackingField: 3
-  <MoveSpeed>k__BackingField: 5
+  <MoveSpeed>k__BackingField: 4
   <AttackDelay>k__BackingField: 3
