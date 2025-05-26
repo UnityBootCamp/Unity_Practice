@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IPool
 {
     Transform Trans { get; set; }
+
 
     GameObject Get(Action<GameObject> onGet = null);
 

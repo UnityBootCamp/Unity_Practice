@@ -36,6 +36,8 @@ public class PoolManager : MonoBehaviour
         poolDict.Add(key, pool);
     }
 
+ 
+
     // 오브젝트를 풀에서 꺼내 반환 (경로를 통해 접근)
     public GameObject Get(string key, Action<GameObject> onGet = null)
     {

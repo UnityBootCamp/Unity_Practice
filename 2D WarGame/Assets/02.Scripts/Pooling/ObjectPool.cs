@@ -8,10 +8,11 @@ public class ObjectPool : IPool
     public Transform Trans { get; set; }
 
     // 오브젝트를 재사용하기 위한 큐 (비활성화된 오브젝트 저장소)
-    private readonly Queue<GameObject> pool = new();
+    private Queue<GameObject> pool = new();
 
     // 같은 오브젝트가 중복으로 Release 되는 것을 방지하기 위한 집합
     private readonly HashSet<GameObject> pooledSet = new();
+
 
     // 풀에서 오브젝트를 꺼낼 때 사용
     public GameObject Get(Action<GameObject> onGet = null)
