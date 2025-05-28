@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour
 {
     const int CAMERA_BOUND = 16;
-    const int CAMERA_MOVE_SPEED = 6;
+    const int CAMERA_MOVE_SPEED = 10;
     Vector3 _moveDir;
 
     

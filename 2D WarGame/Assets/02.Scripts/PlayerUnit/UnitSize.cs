@@ -4,7 +4,7 @@ public class UnitSize:MonoBehaviour
 {
     [SerializeField] GameObject[] _playerUnits;
 
-    public static Vector3[] UnitSizes = new Vector3[5];
+    public static Vector3[] UnitSizes = new Vector3[6];
 
 
     private void Awake()

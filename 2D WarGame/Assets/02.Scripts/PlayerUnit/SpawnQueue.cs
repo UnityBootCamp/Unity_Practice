@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SpawnQueue : MonoBehaviour
 {
-    SpawnQueueUI _spawnQueueUI;
     PlayerUnitData _nextSpawnUnit;
 
     Queue<PlayerUnitData> _queue;
@@ -16,7 +15,6 @@ public class SpawnQueue : MonoBehaviour
     private void Awake()
     {
         _queue = new Queue<PlayerUnitData>(5);
-        _spawnQueueUI = GetComponent<SpawnQueueUI>();
     }
 
     private void Update()
@@ -31,21 +29,21 @@ public class SpawnQueue : MonoBehaviour
     IEnumerator C_SpawnCool()
     {
         float spawnCool = 0f;
-        _nextSpawnUnit = _queue.Peek();
+        _nextSpawnUnit = _queue.Peek(); // 소환대기 유닛
         
         while(spawnCool< _nextSpawnUnit.SpawnCoolDown)
         {
-            _spawnQueueUI.SetSlider(spawnCool / _nextSpawnUnit.SpawnCoolDown);
+            PlayerSpawnManager.Instance.SetSlider(spawnCool / _nextSpawnUnit.SpawnCoolDown);
             spawnCool += Time.deltaTime;
             yield return null;
         }
 
-        _spawnQueueUI.SetSlider(1);
+        
+        PlayerSpawnManager.Instance.SetAfterSpawn(_nextSpawnUnit.UnitType);
 
         _queue.Dequeue();
-        _spawnQueueUI.UpdateQueue(_nextSpawnUnit.UnitType);
         _nextSpawnUnit = null;
-        _spawnQueueUI.WaitingUnits--;
+
 
     }
 

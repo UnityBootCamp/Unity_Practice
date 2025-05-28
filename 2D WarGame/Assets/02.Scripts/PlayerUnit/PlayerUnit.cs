@@ -60,13 +60,12 @@ public class PlayerUnit : MonoBehaviour
                 StartCoroutine(C_MoveCool());
             }
         }
-        
     }
 
     IEnumerator C_MoveCool()
     {
         IsCanMove = false;
-        yield return new WaitForSeconds(0.7f);
+        yield return new WaitForSeconds(0.5f);
         IsCanMove = true;
     }
 

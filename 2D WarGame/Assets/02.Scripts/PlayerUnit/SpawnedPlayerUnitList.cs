@@ -1,60 +1,65 @@
 
 using System.Collections.Generic;
+using UnityEngine;
 using Unity.VisualScripting;
 
 public class SpawnedPlayerUnitList
 {
 
-    public int FarmerCount;
-    public int SwordManCount;
-    public int ArcherCount;
-    public int PaladinCount;
-    public int KnightCount;
+   
 
-    public List<int> UnitsCount = new List<int>(5);
+    public List<int> UnitsCount = new List<int>(6);
 
     public SpawnedPlayerUnitList()
     {
-        FarmerCount = 0;
-        SwordManCount = 0;
-        ArcherCount = 0;
-        PaladinCount = 0;
-        KnightCount = 0;
-
-        UnitsCount.Add(FarmerCount);
-        UnitsCount.Add(SwordManCount);
-        UnitsCount.Add(ArcherCount);
-        UnitsCount.Add(PaladinCount);
-        UnitsCount.Add(KnightCount);
+        for(int i=0; i<UnitsCount.Capacity; i++)
+        {
+            UnitsCount.Add(0);
+        }
     }
 
-    public int UnitCount(int index)
-    {
-        return UnitsCount[index];
-    }
 
     public void Spawn(string unitName)
     {
         switch (unitName)
         {
             case "Farmer":
-                FarmerCount++;
+                UnitsCount[0]++;
                 break;
             case "SwordMan":
-                FarmerCount++;
+                UnitsCount[1]++;
                 break;
             case "Archer":
-                FarmerCount++;
+                UnitsCount[2]++;
                 break;
             case "Paladin":
-                FarmerCount++;
+                UnitsCount[3]++;
+                break;
+            case "Wizard":
+                UnitsCount[4]++;
                 break;
             case "Knight":
-                FarmerCount++;
+                UnitsCount[5]++;
                 break;
             default:
                 break;
         }
 
+    }
+    public int TotalFarmingUnitCount()
+    {
+        return UnitsCount[0];
+    }
+
+    public int TotalUnitCount()
+    {
+        int res = 0;
+
+        for (int i = 1; i < UnitsCount.Capacity; i++)
+        {
+            res += UnitsCount[i];
+        }
+
+        return res;
     }
 }

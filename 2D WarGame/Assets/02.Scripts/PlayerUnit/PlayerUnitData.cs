@@ -8,6 +8,7 @@ public enum PlayerUnitType
     swordMan,
     archer,
     paladin,
+    wizard,
     knight,
 }
 
@@ -17,11 +18,13 @@ public class PlayerUnitData : ScriptableObject
     [field: SerializeField] public GameObject UnitPrefab { get; set; }
     [field: SerializeField] public Sprite UnitPortrait { get; set; }
     [field: SerializeField] public PlayerUnitType UnitType { get; set; }
+    [field: SerializeField] public int Cost { get; set; }
     [field: SerializeField] public float SpawnCoolDown { get; set; }
     [field: SerializeField] public float Hp { get; set; }
     [field: SerializeField] public float AttackForce { get; set; }
     [field: SerializeField] public float MoveSpeed { get; set; }
     [field: SerializeField] public float AttackDelay { get; set; }
+
 
     
 }

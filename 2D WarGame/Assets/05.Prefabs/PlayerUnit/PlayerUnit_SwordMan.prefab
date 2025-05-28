@@ -83,7 +83,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unitData: {fileID: 11400000, guid: 9ca68f65688b20c448bf880a70d3fed6, type: 2}
-  UnitType: 0
+  UnitType: 1
   _prevUnit: {fileID: 0}
 --- !u!1 &228572518101447940
 GameObject:
@@ -853,8 +853,8 @@ RectTransform:
   m_GameObject: {fileID: 1198561355999266653}
   m_LocalRotation: {x: 0, y: 0.008726558, z: 0, w: 0.999962}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: -1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5777973762739897821}
   m_Father: {fileID: 0}

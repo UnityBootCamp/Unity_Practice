@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +8,6 @@ public class SpawnQueueUI : MonoBehaviour
     [SerializeField] List<Image> _unitPortraits;
     [SerializeField] Slider _spawnSlider;
 
-    PlayerUnitSpawner _playerUnitSpawner;
     SpawnQueue _spawnQueue;
 
     Sprite _unitPortrait;
@@ -19,9 +17,6 @@ public class SpawnQueueUI : MonoBehaviour
 
     private void Awake()
     {
-        _playerUnitSpawner = FindFirstObjectByType<PlayerUnitSpawner>();
-        _spawnQueue = GetComponent<SpawnQueue>();
-
         _spawnSlider.value = 0;
         
         for(int i =0; i<_unitPortraits.Capacity; i++)
@@ -37,20 +32,47 @@ public class SpawnQueueUI : MonoBehaviour
 
     public void OnSpawn(int index)
     {
-        if (WaitingUnits < 5 && _playerUnitSpawner.unitList.UnitCount(index)<5)
+        //≥Û∫Œ
+        if (index == 0)
         {
-            _unitPortrait = _playerUnitSpawner.Units[index].UnitPortrait;
-            _unitPortraits[WaitingUnits].sprite = _unitPortrait;
-            _spawnQueue.UnitEnqueue(_playerUnitSpawner.Units[index]);
-            WaitingUnits++;
-            _playerUnitSpawner.unitList.UnitsCount[index]++;
+            if (WaitingUnits < 5 && PlayerSpawnManager.Instance.IsCanSpawnFarmingUnit
+                && PlayerSpawnManager.Instance.Mineral - PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index].Cost>=0)
+            {
+                PlayerSpawnManager.Instance.Mineral -= PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index].Cost;
+
+                _unitPortrait = PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index].UnitPortrait;
+                _unitPortraits[WaitingUnits].sprite = _unitPortrait;
+                PlayerSpawnManager.Instance.SpawnQueue.UnitEnqueue(PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index]);
+                WaitingUnits++;
+                PlayerSpawnManager.Instance.PlayerUnitSpawner.UnitList.UnitsCount[index]++;
+                PlayerSpawnManager.Instance.UpdateFarmingUnitResourceUI();
+            }
+            
+        }
+        //¿¸≈ı ¿Ø¥÷
+        else
+        {
+            if (WaitingUnits < 5 && PlayerSpawnManager.Instance.IsCanSpawnUnit
+                 && PlayerSpawnManager.Instance.Mineral - PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index].Cost >= 0)
+            {
+                PlayerSpawnManager.Instance.Mineral -= PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index].Cost;
+
+                _unitPortrait = PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index].UnitPortrait;
+                _unitPortraits[WaitingUnits].sprite = _unitPortrait;
+                PlayerSpawnManager.Instance.SpawnQueue.UnitEnqueue(PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index]);
+                WaitingUnits++;
+                PlayerSpawnManager.Instance.PlayerUnitSpawner.UnitList.UnitsCount[index]++;
+                PlayerSpawnManager.Instance.UpdateUnitResourceUI();
+
+            }
         }
 
     }
     
-    public void UpdateQueue(PlayerUnitType unitType)
+    public void UpdateQueueUI(PlayerUnitType unitType)
     {
-        _playerUnitSpawner.Spawn(unitType);
+        PlayerSpawnManager.Instance.PlayerUnitSpawner.Spawn(unitType);
+
         for(int i=0; i<_unitPortraits.Count-1; i++)
         {
             _unitPortraits[i].sprite = _unitPortraits[i + 1].sprite;

@@ -19,7 +19,7 @@ public class PoolManager : MonoBehaviour
     }
 
     // 새로운 오브젝트 풀 생성 (프리팹 생성 함수를 받아 미리 preloadCount만큼 생성)
-    public void CreatePool(string key, Func<GameObject> factory, int preloadCount = 5)
+    public void CreatePool(string key, Func<GameObject> factory, int preloadCount = 50)
     {
         if (poolDict.ContainsKey(key))
             return;
