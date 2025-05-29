@@ -6,7 +6,9 @@ public class PlayerSpawnQueueUI : MonoBehaviour
 {
     [SerializeField] List<Image> _unitPortraits;
     [SerializeField] Slider _spawnSlider;
+    [SerializeField] Sprite _defaultQueueSprite;
 
+    
     PlayerSpawnQueue _spawnQueue;
 
     Sprite _unitPortrait;
@@ -20,8 +22,9 @@ public class PlayerSpawnQueueUI : MonoBehaviour
         
         for(int i =0; i<_unitPortraits.Capacity; i++)
         {
-            _unitPortraits[i].sprite = null;
+            _unitPortraits[i].sprite = _defaultQueueSprite;
         }
+
     }
 
     public void SetSlider(float value)
@@ -43,7 +46,7 @@ public class PlayerSpawnQueueUI : MonoBehaviour
                 _unitPortraits[WaitingUnits].sprite = _unitPortrait;
                 PlayerSpawnManager.Instance.PlayerSpawnQueue.UnitEnqueue(PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index]);
                 WaitingUnits++;
-                PlayerSpawnManager.Instance.PlayerUnitSpawner.UnitList.UnitsCount[index]++;
+                PlayerSpawnManager.Instance.UnitList.UnitsCount[index]++;
                 PlayerSpawnManager.Instance.UpdateFarmingUnitResourceUI();
             }
             
@@ -60,7 +63,7 @@ public class PlayerSpawnQueueUI : MonoBehaviour
                 _unitPortraits[WaitingUnits].sprite = _unitPortrait;
                 PlayerSpawnManager.Instance.PlayerSpawnQueue.UnitEnqueue(PlayerSpawnManager.Instance.PlayerUnitSpawner.Units[index]);
                 WaitingUnits++;
-                PlayerSpawnManager.Instance.PlayerUnitSpawner.UnitList.UnitsCount[index]++;
+                PlayerSpawnManager.Instance.UnitList.UnitsCount[index]++;
                 PlayerSpawnManager.Instance.UpdateUnitResourceUI();
 
             }
@@ -76,7 +79,7 @@ public class PlayerSpawnQueueUI : MonoBehaviour
         {
             _unitPortraits[i].sprite = _unitPortraits[i + 1].sprite;
         }
-        _unitPortraits[_unitPortraits.Count - 1].sprite = null;
+        _unitPortraits[_unitPortraits.Count-1].sprite = _defaultQueueSprite;
         SetSlider(0);
     }
 

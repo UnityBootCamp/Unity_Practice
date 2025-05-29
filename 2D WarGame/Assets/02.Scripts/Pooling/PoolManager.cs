@@ -32,6 +32,7 @@ public class PoolManager : MonoBehaviour
         var pool = new ObjectPool { Trans = root };
         pool.Preload(factory, preloadCount);
 
+
         // µñ¼Å³Ê¸®¿¡ µî·Ï
         poolDict.Add(key, pool);
     }

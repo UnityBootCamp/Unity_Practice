@@ -1,52 +1,49 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
 
-public class EnemyUnit : MonoBehaviour
+public class EnemyUnit : Unit<EnemyUnitData>
 {
-    [SerializeField] EnemyUnitData _unitData;
 
     // 유닛의 기본데이터
     public EnemyUnitType UnitType;
-    float _hp;
-    float _attackForce;
-    float _moveSpeed;
-    float _attackDelay;
-    Animator _unitAnim;
-    Vector3 _unitSize;
     public Vector3 ThisUnitSize => _unitSize;
+
+    GameObject _oppositeUnit;
 
 
     // 바로 앞 유닛 관련
     public EnemyUnit _prevUnit;
-    Vector3 _prevUnitSize;
 
-
-    bool IsCanMove;
+    bool isCanAttack;
+    bool isAttacking;
 
     private void OnEnable()
     {
         IsCanMove = true;
         SetData();
+        isCanAttack = true;
     }
 
     private void Start()
     {
         _unitAnim = GetComponent<Animator>();
-        _unitSize = UnitSize.UnitSizes[(int)UnitType];
-
+        _unitSize = EnemyUnitSize.EnemyUnitSizes[(int)UnitType];
+        
 
     }
 
     private void Update()
     {
-        if (IsCanMove)
+        // 이동
+        if (IsCanMove && isAttacking == false)
         {
             if (_prevUnit == this ||
                 (
-                (_prevUnit.transform.position.x - _prevUnitSize.x / 2)
-                - (transform.position.x + _unitSize.x / 2) >= 0)
+                (_prevUnit.transform.position.x + _prevUnitSize.x / 2)
+                - (transform.position.x - _unitSize.x / 2) <= 0)
                 )
             {
                 transform.parent.Translate(Vector3.left * _moveSpeed * Time.deltaTime);
@@ -59,19 +56,61 @@ public class EnemyUnit : MonoBehaviour
                 StartCoroutine(C_MoveCool());
             }
         }
+
+
+        // 플레이어 선봉 유닛이 존재한다면
+        if (UnitAttackManager.Instance.PlayerFirstUnit != null)
+        {
+
+            // 공격
+            if (
+                (UnitAttackManager.Instance.PlayerFirstUnit.gameObject.transform.parent.transform.position.x + UnitAttackManager.Instance.PlayerFirstUnit.ThisUnitSize.x / 2)
+                - (transform.parent.transform.position.x - _unitSize.x / 2) >= 0)
+            {
+                _unitAnim.SetBool("1_Move", false);
+
+                if (isCanAttack)
+                {
+                    isAttacking = true;
+                    StartCoroutine(C_AttackRoutine());
+                }
+            }
+            else
+            {
+
+                isAttacking = false;
+                _unitAnim.SetBool("1_Move", true);
+            }
+
+            if (_hp <= 0)
+            {
+                OnDeath();
+            }
+        }
+        
+
+
     }
 
-    IEnumerator C_MoveCool()
+    public void GetDamage(float value)
     {
-        IsCanMove = false;
-        yield return new WaitForSeconds(0.5f);
-        IsCanMove = true;
+        _hp -= value;
     }
+
+    IEnumerator C_AttackRoutine()
+    {
+        isCanAttack = false;
+        _unitAnim.SetTrigger("2_Attack");
+        UnitAttackManager.Instance.PlayerFirstUnit.GetDamage(_attackForce);
+        yield return new WaitForSeconds(_attackDelay);
+        isCanAttack = true;
+    }
+
 
     public void SetPrevUnit(EnemyUnit prevUnit)
     {
         _prevUnit = prevUnit;
-        _prevUnitSize = UnitSize.UnitSizes[(int)_prevUnit.UnitType];
+        _prevUnitSize = EnemyUnitSize.EnemyUnitSizes[(int)_prevUnit.UnitType];
     }
 
     void SetData()
@@ -82,5 +121,24 @@ public class EnemyUnit : MonoBehaviour
         _moveSpeed = _unitData.MoveSpeed;
         _attackDelay = _unitData.AttackDelay;
     }
+
+
+    public void OnDeath()
+    {
+        PoolManager.Instance.Release(UnitType.ToString(), gameObject.transform.parent.gameObject);
+        EnemySpawnManager.Instance.UnitList.DequeueUnitList(); 
+        
+        if (EnemySpawnManager.Instance.UnitList.SpawnedBattleUnit.Count == 0)
+        {
+
+            UnitAttackManager.Instance.EnemyFirstUnit = null;
+        }
+        else
+        {
+
+            UnitAttackManager.Instance.EnemyFirstUnit = EnemySpawnManager.Instance.UnitList.SpawnedBattleUnit.Peek();
+        }
+    }
+
 
 }

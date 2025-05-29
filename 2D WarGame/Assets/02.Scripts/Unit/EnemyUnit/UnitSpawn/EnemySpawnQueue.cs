@@ -4,24 +4,17 @@ using UnityEngine;
 
 public class EnemySpawnQueue : SpawnQueue<EnemyUnitData>
 {
-    float _spawnCoolDown;
-    float _currentCoolDown;
-    public int index;
 
     private void Update()
     {
-
-        if (_currentCoolDown>= _spawnCoolDown)
-        {
-            UnitEnqueue(EnemySpawnManager.Instance.EnemyUnitSpawner.Units[index]);
-        }
-
-
         if (_queue.Count != 0 && _nextSpawnUnit == null)
         {
             StartCoroutine(C_SpawnCool());
         }
+
     }
+
+   
 
     IEnumerator C_SpawnCool()
     {

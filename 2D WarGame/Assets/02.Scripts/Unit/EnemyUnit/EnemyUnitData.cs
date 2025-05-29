@@ -5,4 +5,5 @@ using UnityEngine;
 public class EnemyUnitData : UnitData
 {
     [field: SerializeField] public EnemyUnitType UnitType { get; set; }
+    [field: SerializeField] public int Weight { get; set; }
 }

@@ -10,6 +10,7 @@ public class PlayerSpawnManager : MonoBehaviour
     [SerializeField] PlayerResourceUI _resourceUI;
     [SerializeField] PlayerSpawnQueueUI _spawnQueueUI;
 
+    public PlayerSpawnedUnitList UnitList = new PlayerSpawnedUnitList();
 
     // 플레이어 보유자원
     public int Mineral
@@ -27,8 +28,8 @@ public class PlayerSpawnManager : MonoBehaviour
     int _mineral;
 
     // 유닛이 생성가능한지 확인하는 bool
-    public bool IsCanSpawnUnit => PlayerUnitSpawner.UnitList.TotalUnitCount() < PlayerUnitSpawner.MaxUnitCount;
-    public bool IsCanSpawnFarmingUnit => PlayerUnitSpawner.UnitList.TotalFarmingUnitCount() < PlayerUnitSpawner.MaxFarmingUnitCount;
+    public bool IsCanSpawnUnit => UnitList.TotalUnitCount() < PlayerUnitSpawner.MaxUnitCount;
+    public bool IsCanSpawnFarmingUnit => UnitList.TotalFarmingUnitCount() < PlayerUnitSpawner.MaxFarmingUnitCount;
 
     #region 싱글톤
     public static PlayerSpawnManager Instance => _instance;
@@ -39,7 +40,7 @@ public class PlayerSpawnManager : MonoBehaviour
     {
         _instance = this;
 
-        Mineral = 200;
+        Mineral = 5000;
 
         PlayerSpawnQueue = GetComponent<PlayerSpawnQueue>();
         PlayerUnitSpawner = GetComponent<PlayerUnitSpawner>();
@@ -55,12 +56,12 @@ public class PlayerSpawnManager : MonoBehaviour
     public void UpdateUnitResourceUI()
     {
         _resourceUI.UpdateUnitResource
-            ($"{PlayerUnitSpawner.UnitList.TotalUnitCount()}/{PlayerUnitSpawner.MaxUnitCount}");
+            ($"{UnitList.TotalUnitCount()}/{PlayerUnitSpawner.MaxUnitCount}");
     }
     public void UpdateFarmingUnitResourceUI()
     {
         _resourceUI.UpdateFarmingUnitResource
-            ($"{PlayerUnitSpawner.UnitList.TotalFarmingUnitCount()}/{PlayerUnitSpawner.MaxFarmingUnitCount}");
+            ($"{UnitList.TotalFarmingUnitCount()}/{PlayerUnitSpawner.MaxFarmingUnitCount}");
     }
     public void UpdateResourceUI()
     {

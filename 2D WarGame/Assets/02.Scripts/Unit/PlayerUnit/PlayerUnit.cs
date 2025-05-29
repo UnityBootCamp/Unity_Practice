@@ -4,45 +4,41 @@ using UnityEngine;
 
 
 
-public class PlayerUnit : MonoBehaviour
+public class PlayerUnit : Unit<PlayerUnitData>
 {
-    [SerializeField] PlayerUnitData _unitData;
 
     // 유닛의 기본데이터
     public PlayerUnitType UnitType;
-    float _hp;
-    float _attackForce;
-    float _moveSpeed;
-    float _attackDelay;
-    Animator _unitAnim;
-    Vector3 _unitSize;
     public Vector3 ThisUnitSize => _unitSize;
 
 
     // 바로 앞 유닛 관련
     public PlayerUnit _prevUnit;
-    Vector3 _prevUnitSize;
+
+    GameObject _oppositeUnit;
 
 
-    bool IsCanMove;
+    bool isCanAttack;
+    bool isAttacking;
 
     private void OnEnable()
     {
         IsCanMove = true;
         SetData();
+        isCanAttack = true;
     }
 
     private void Start()
     {
         _unitAnim = GetComponent<Animator>();
-        _unitSize = UnitSize.UnitSizes[(int)UnitType];
+        _unitSize = PlayerUnitSize.PlayerUnitSizes[(int)UnitType];
         
 
     }
 
     private void Update()
     {
-        if (IsCanMove)
+        if (IsCanMove && isAttacking==false)
         {
             if (_prevUnit == this ||
                 (
@@ -60,19 +56,58 @@ public class PlayerUnit : MonoBehaviour
                 StartCoroutine(C_MoveCool());
             }
         }
+
+
+        // 적 선봉 유닛이 존재한다면
+        if (UnitAttackManager.Instance.EnemyFirstUnit != null)
+        { // 공격
+            if (
+            (UnitAttackManager.Instance.EnemyFirstUnit.gameObject.transform.parent.transform.position.x - UnitAttackManager.Instance.EnemyFirstUnit.ThisUnitSize.x / 2)
+            - (transform.parent.transform.position.x + _unitSize.x / 2) <= 0)
+            {
+                _unitAnim.SetBool("1_Move", false);
+                
+                if (isCanAttack)
+                {
+                    isAttacking = true;
+                    StartCoroutine(C_AttackRoutine());
+                }
+            }
+            else
+            {
+                _unitAnim.SetBool("1_Move", true);
+                isAttacking = false;
+            }
+
+            if (_hp <= 0)
+            {
+                OnDeath();
+            }
+        }
+           
     }
 
-    IEnumerator C_MoveCool()
+    IEnumerator C_AttackRoutine()
     {
-        IsCanMove = false;
-        yield return new WaitForSeconds(0.5f);
-        IsCanMove = true;
+        isCanAttack = false;
+        
+        _unitAnim.SetTrigger("2_Attack");
+        UnitAttackManager.Instance.EnemyFirstUnit.GetDamage(_attackForce);
+        yield return new WaitForSeconds(_attackDelay);
+        isCanAttack = true;
     }
+
+    public void GetDamage(float value)
+    {
+        _hp -= value;
+    }
+
+
 
     public void SetPrevUnit(PlayerUnit prevUnit)
     {
         _prevUnit = prevUnit;
-        _prevUnitSize = UnitSize.UnitSizes[(int)_prevUnit.UnitType];
+        _prevUnitSize = PlayerUnitSize.PlayerUnitSizes[(int)_prevUnit.UnitType];
     }
 
     void SetData()
@@ -83,5 +118,23 @@ public class PlayerUnit : MonoBehaviour
         _moveSpeed = _unitData.MoveSpeed;
         _attackDelay = _unitData.AttackDelay;
     }
+
+
+    public void OnDeath()
+    {
+        PoolManager.Instance.Release(UnitType.ToString(), gameObject.transform.parent.gameObject);
+        PlayerSpawnManager.Instance.UnitList.DequeueUnitList();
+        if(PlayerSpawnManager.Instance.UnitList.SpawnedBattleUnit.Count == 0)
+        {
+
+            UnitAttackManager.Instance.PlayerFirstUnit = null;
+        }
+        else
+        {
+
+            UnitAttackManager.Instance.PlayerFirstUnit = PlayerSpawnManager.Instance.UnitList.SpawnedBattleUnit.Peek();
+        }
+    }
+
 
 }

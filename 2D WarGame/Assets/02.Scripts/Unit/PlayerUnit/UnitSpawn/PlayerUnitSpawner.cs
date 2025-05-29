@@ -2,14 +2,12 @@ using UnityEngine;
 
 public class PlayerUnitSpawner : UnitSpawner<PlayerUnitData>
 {
-    // 생성된 플레이어 유닛 리스트
-    public SpawnedPlayerUnitList UnitList = new SpawnedPlayerUnitList();
-
-
     // 유닛 스폰이 가능한지 아닌지 판별을 위한 필드
     public int MaxFarmingUnitCount;         // 일꾼 유닛
 
 
+    Vector3 _spawnPos = new Vector3(-15f, -3.1f, 0f);
+    PlayerUnit _prevUnit;
 
     protected override void Start()
     {
@@ -19,7 +17,7 @@ public class PlayerUnitSpawner : UnitSpawner<PlayerUnitData>
 
         for (int i=0; i<_units.Count; i++)
         {
-            PoolManager.Instance.CreatePool(_units[i].UnitType.ToString(), () => Instantiate(_units[i].UnitPrefab, transform.position, Quaternion.identity, transform));
+            PoolManager.Instance.CreatePool(_units[i].UnitType.ToString(),  () => Instantiate(_units[i].UnitPrefab, _spawnPos, Quaternion.identity));
         }
     }
 
@@ -39,6 +37,17 @@ public class PlayerUnitSpawner : UnitSpawner<PlayerUnitData>
                 spawnedUnit.SetPrevUnit(_prevUnit);
             }
 
+
+            if (PlayerSpawnManager.Instance.UnitList.SpawnedBattleUnit.Count ==0)
+            {
+                // 현재 적의 가장 선봉 유닛을 UnitAttackManager에서 참조하고 있게 함
+                UnitAttackManager.Instance.SetPlayerFirstUnit(spawnedUnit);
+            }
+
+            // 생성 유닛리스트에 삽입
+            PlayerSpawnManager.Instance.UnitList.EnqueueUnitList(spawnedUnit);
+
+
             _prevUnit = spawnedUnit;
         }
         // 농부
@@ -48,7 +57,7 @@ public class PlayerUnitSpawner : UnitSpawner<PlayerUnitData>
 
         }
 
-        
+
     }
 
     

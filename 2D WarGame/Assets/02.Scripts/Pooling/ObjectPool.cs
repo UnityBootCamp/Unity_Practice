@@ -53,7 +53,7 @@ public class ObjectPool : IPool
         {
             var obj = factory.Invoke();   // 프리팹 생성
             obj.SetActive(false);         // 비활성화
-            obj.transform.SetParent(Trans);
+            obj.transform.SetParent(Trans, worldPositionStays : true);
             pool.Enqueue(obj);            // 풀에 추가
             pooledSet.Add(obj);           // 중복 방지용 HashSet에 등록
         }

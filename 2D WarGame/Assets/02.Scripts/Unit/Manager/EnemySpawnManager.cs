@@ -1,13 +1,22 @@
+using TMPro;
 using UnityEngine;
 
 public class EnemySpawnManager : MonoBehaviour
 {
+    // For Test
+    [SerializeField] TextMeshProUGUI EnemyMineralText;
+
+    public EnemySpawnedUnitList UnitList = new EnemySpawnedUnitList();
+
+
+
     // 참조
     public EnemySpawnQueue EnemySpawnQueue;       // 생산 예약 큐를 관리
     public EnemyUnitSpawner EnemyUnitSpawner;     // 유닛 생산
 
     int _baseMineralGen;
-
+    float _mineralGainCool;
+    float _currentMineralGainCool;
 
     // 적 보유자원
     public int EnemyMineral
@@ -36,7 +45,8 @@ public class EnemySpawnManager : MonoBehaviour
         _instance = this;
 
         EnemyMineral = 200;
-        _baseMineralGen = 50;
+        _baseMineralGen = 0;
+        _mineralGainCool = 1f;
 
         EnemySpawnQueue = GetComponent<EnemySpawnQueue>();
         EnemyUnitSpawner = GetComponent<EnemyUnitSpawner>();
@@ -47,6 +57,13 @@ public class EnemySpawnManager : MonoBehaviour
 
     public void Update()
     {
-        EnemyMineral += _baseMineralGen;
+        _currentMineralGainCool += Time.deltaTime;
+        if (_currentMineralGainCool > _mineralGainCool)
+        {
+            EnemyMineral += _baseMineralGen;
+            _currentMineralGainCool = 0;
+        }
+
+        EnemyMineralText.text = EnemyMineral.ToString();
     }
 }

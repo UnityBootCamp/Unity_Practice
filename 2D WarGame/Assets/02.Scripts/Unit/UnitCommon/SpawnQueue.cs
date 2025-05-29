@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpawnQueue<T> : MonoBehaviour
     where T :UnitData
 {
-    protected T _nextSpawnUnit;
+    protected T _nextSpawnUnit;         //다음에 소환될 유닛
 
     protected Queue<T> _queue;
     public Queue<T> Queue => _queue;
