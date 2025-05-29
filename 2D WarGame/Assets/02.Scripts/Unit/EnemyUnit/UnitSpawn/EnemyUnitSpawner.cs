@@ -16,13 +16,13 @@ public class EnemyUnitSpawner : UnitSpawner<EnemyUnitData>
     float _spawnCoolDown;                               // 유닛 생성 쿨
     float _currentCoolDown;                             // 현재 누적시간
 
-    bool _isCanSpawn;
+    bool _isOnSpawnCool;
 
     protected override void Start()
     {
         base.Start();
 
-        _isCanSpawn = true;
+        _isOnSpawnCool = true;
         _spawnCoolDown = 1.2f;
 
         for (int i = 0; i < _units.Count; i++)
@@ -40,7 +40,7 @@ public class EnemyUnitSpawner : UnitSpawner<EnemyUnitData>
     private void Update()
     {
         // 지정된 스폰쿨이 지났고, 가장 싼 유닛을 생산할 정도의 미네랄을 소유하고 있다면
-        if (EnemySpawnManager.Instance.EnemyMineral>= Units[0].Cost&& _isCanSpawn)
+        if (EnemySpawnManager.Instance.EnemyMineral>= Units[0].Cost&& _isOnSpawnCool && EnemySpawnManager.Instance.IsCanSpawnUnit)
         {
             EnemyUnitData randomEnemyUnitData = null;
 
@@ -55,6 +55,9 @@ public class EnemyUnitSpawner : UnitSpawner<EnemyUnitData>
                 return;
             }
 
+            EnemySpawnManager.Instance.UnitList.UnitsCount[(int)randomEnemyUnitData.UnitType]++;
+
+
             EnemySpawnManager.Instance.EnemyMineral -= randomEnemyUnitData.Cost;
             EnemySpawnManager.Instance.EnemySpawnQueue.UnitEnqueue(randomEnemyUnitData);
             _currentCoolDown = 0;
@@ -64,9 +67,9 @@ public class EnemyUnitSpawner : UnitSpawner<EnemyUnitData>
 
     IEnumerator C_SpawnCool()
     {
-        _isCanSpawn = false;
+        _isOnSpawnCool = false;
         yield return new WaitForSeconds(2f);
-        _isCanSpawn = true;
+        _isOnSpawnCool = true;
     }
 
     public bool CanSpawn(EnemyUnitData enemyUnitData)
@@ -114,7 +117,6 @@ public class EnemyUnitSpawner : UnitSpawner<EnemyUnitData>
         // 생성 유닛리스트에 삽입
         if (EnemySpawnManager.Instance.UnitList.SpawnedBattleUnit.Count ==0)
         {
-            Debug.Log("1111111111");
             // 현재 적의 가장 선봉 유닛을 UnitAttackManager에서 참조하고 있게 함
             UnitAttackManager.Instance.SetEnemyFirstUnit(spawnedUnit);
         }

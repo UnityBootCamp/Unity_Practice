@@ -35,6 +35,9 @@ public class EnemySpawnManager : MonoBehaviour
     // 유닛이 생성가능한지 확인하는 bool
 
 
+    // 유닛이 생성가능한지 확인하는 bool
+    public bool IsCanSpawnUnit => UnitList.TotalUnitCount() < EnemyUnitSpawner.MaxUnitCount;
+
     #region 싱글톤
     public static EnemySpawnManager Instance => _instance;
 
@@ -45,7 +48,7 @@ public class EnemySpawnManager : MonoBehaviour
         _instance = this;
 
         EnemyMineral = 200;
-        _baseMineralGen = 0;
+        _baseMineralGen = 500;
         _mineralGainCool = 1f;
 
         EnemySpawnQueue = GetComponent<EnemySpawnQueue>();

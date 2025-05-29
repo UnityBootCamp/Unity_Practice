@@ -15,7 +15,6 @@ public class PlayerUnitSize : UnitSize
         for (int i = 0; i < _playerUnits.Length; i++)
         {
             PlayerUnitSizes[i] = CalcSpriteScale(_playerUnits[i]);
-            Debug.Log(PlayerUnitSizes[i]);
         }
     }
 

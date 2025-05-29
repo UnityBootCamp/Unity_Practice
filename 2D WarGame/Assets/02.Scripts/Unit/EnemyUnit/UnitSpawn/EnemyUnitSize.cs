@@ -14,7 +14,6 @@ public class EnemyUnitSize : UnitSize
         for (int i = 0; i < _enemyUnits.Length; i++)
         {
             EnemyUnitSizes[i] = CalcSpriteScale(_enemyUnits[i]);
-            Debug.Log(EnemyUnitSizes[i]);
         }
     }
 

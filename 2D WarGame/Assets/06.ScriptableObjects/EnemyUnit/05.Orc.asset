@@ -15,7 +15,7 @@ MonoBehaviour:
   <UnitPrefab>k__BackingField: {fileID: 8305651861530718594, guid: 76779a8f9f9d9ed429c19c1a249cacda, type: 3}
   <Cost>k__BackingField: 250
   <SpawnCoolDown>k__BackingField: 1
-  <Hp>k__BackingField: 1
+  <Hp>k__BackingField: 500
   <AttackForce>k__BackingField: 1
   <MoveSpeed>k__BackingField: 1
   <AttackDelay>k__BackingField: 1

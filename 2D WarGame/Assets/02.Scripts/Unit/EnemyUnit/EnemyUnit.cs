@@ -11,14 +11,13 @@ public class EnemyUnit : Unit<EnemyUnitData>
     public EnemyUnitType UnitType;
     public Vector3 ThisUnitSize => _unitSize;
 
-    GameObject _oppositeUnit;
 
 
     // 바로 앞 유닛 관련
     public EnemyUnit _prevUnit;
 
     bool isCanAttack;
-    bool isAttacking;
+    Coroutine _attackCoroutine;
 
     private void OnEnable()
     {
@@ -35,16 +34,31 @@ public class EnemyUnit : Unit<EnemyUnitData>
 
     }
 
+    public bool IsFaceOppositeUnit()
+    {
+        if (UnitAttackManager.Instance.PlayerFirstUnit == null)
+        {
+            return false;
+        }
+        else
+        {
+            return ((UnitAttackManager.Instance.PlayerFirstUnit.gameObject.transform.parent.gameObject.transform.position.x + UnitAttackManager.Instance.PlayerFirstUnit.ThisUnitSize.x / 2)
+                - (transform.parent.gameObject.transform.position.x - _unitSize.x / 2) >= 0);
+        }
+
+
+    }
+
     private void Update()
     {
-        // 이동
-        if (IsCanMove && isAttacking == false)
+
+        if (IsFaceOppositeUnit() == false && _attackCoroutine == null && IsCanMove)
         {
             if (_prevUnit == this ||
-                (
-                (_prevUnit.transform.position.x + _prevUnitSize.x / 2)
-                - (transform.position.x - _unitSize.x / 2) <= 0)
-                )
+                  (
+                  (_prevUnit.transform.position.x + _prevUnitSize.x / 2)
+                  - (transform.position.x - _unitSize.x / 2) <= 0)
+                  )
             {
                 transform.parent.Translate(Vector3.left * _moveSpeed * Time.deltaTime);
                 _unitAnim.SetBool("1_Move", true);
@@ -56,54 +70,42 @@ public class EnemyUnit : Unit<EnemyUnitData>
                 StartCoroutine(C_MoveCool());
             }
         }
-
-
-        // 플레이어 선봉 유닛이 존재한다면
-        if (UnitAttackManager.Instance.PlayerFirstUnit != null)
+        else if (IsFaceOppositeUnit() && _attackCoroutine == null)
         {
+            _unitAnim.SetBool("1_Move", false);
 
-            // 공격
-            if (
-                (UnitAttackManager.Instance.PlayerFirstUnit.gameObject.transform.parent.transform.position.x + UnitAttackManager.Instance.PlayerFirstUnit.ThisUnitSize.x / 2)
-                - (transform.parent.transform.position.x - _unitSize.x / 2) >= 0)
+            if (isCanAttack)
             {
-                _unitAnim.SetBool("1_Move", false);
-
-                if (isCanAttack)
-                {
-                    isAttacking = true;
-                    StartCoroutine(C_AttackRoutine());
-                }
+                _attackCoroutine = StartCoroutine(C_AttackRoutine());
             }
             else
             {
-
-                isAttacking = false;
-                _unitAnim.SetBool("1_Move", true);
+                return;
             }
 
-            if (_hp <= 0)
-            {
-                OnDeath();
-            }
         }
-        
-
 
     }
 
     public void GetDamage(float value)
     {
         _hp -= value;
+
+        if (_hp <= 0)
+        {
+            OnDeath();
+        }
     }
 
     IEnumerator C_AttackRoutine()
     {
         isCanAttack = false;
         _unitAnim.SetTrigger("2_Attack");
+        yield return new WaitForSeconds(_attackDelay/2);
         UnitAttackManager.Instance.PlayerFirstUnit.GetDamage(_attackForce);
-        yield return new WaitForSeconds(_attackDelay);
+        yield return new WaitForSeconds(_attackDelay/2);
         isCanAttack = true;
+        _attackCoroutine = null;
     }
 
 
@@ -137,6 +139,7 @@ public class EnemyUnit : Unit<EnemyUnitData>
         {
 
             UnitAttackManager.Instance.EnemyFirstUnit = EnemySpawnManager.Instance.UnitList.SpawnedBattleUnit.Peek();
+            UnitAttackManager.Instance.EnemyFirstUnit.SetPrevUnit(UnitAttackManager.Instance.EnemyFirstUnit);
         }
     }
 
